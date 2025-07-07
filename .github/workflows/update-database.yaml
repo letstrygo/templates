@@ -1,0 +1,39 @@
+name: Update Database on Merge
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'dist/repository.csv'
+
+jobs:
+  update-database:
+    if: github.event.head_commit.message != 'Update dist/database.sqlite [bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # fetch all history for commit
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22' # or your Go version
+
+      - name: Run seed command
+        run: |
+          cd dist
+          go run ../ seed
+
+      - name: Commit and push updated database
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist/database.sqlite
+          git commit -m "Update dist/database.sqlite [bot]" || echo "No changes to commit"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

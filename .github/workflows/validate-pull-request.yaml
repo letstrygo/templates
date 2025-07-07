@@ -1,0 +1,23 @@
+name: Validate Repository
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-repository:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22' # Set your Go version here
+
+      - name: Try Seed Database
+        run: |
+          cd dist
+          go run ../ seed
