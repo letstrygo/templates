@@ -45,6 +45,7 @@ func (c *Connection) Seed() error {
 			AuthorURL:   row[2],
 			CloneURL:    row[3],
 			Description: row[4],
+			IsOfficial:  true,
 		}
 		templates = append(templates, t)
 	}

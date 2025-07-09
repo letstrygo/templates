@@ -55,8 +55,21 @@ func main() {
 			AuthorURL:   args[2],
 			CloneURL:    args[3],
 			Description: args[4],
+			IsOfficial:  false,
 		})
 
+		if err != nil {
+			log.Fatal(err)
+		}
+	case "delete":
+		args = args[1:]
+
+		if len(args) != 1 {
+			log.Fatal(ErrInvalidArgumentCount)
+		}
+
+		name := args[0]
+		err := conn.DeleteTemplate(name)
 		if err != nil {
 			log.Fatal(err)
 		}
