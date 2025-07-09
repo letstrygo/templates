@@ -2,6 +2,9 @@
 
 This repository contains publicly available templates for use with [LetsTry](https://github.com/letstrygo/letstry).
 
+> [!WARNING]\
+> This repository is not currently in use. It is intended for use by letstry once version 2 is released.
+
 ## Adding your template
 
 To add a template to this repository:
