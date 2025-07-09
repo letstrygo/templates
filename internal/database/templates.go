@@ -72,8 +72,8 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 func (c *Connection) UpsertTemplate(tmpl Template) error {
 	// Insert data
 	stmt, err := c.Prepare(`
-		insert into templates(id, name, author, author_url, clone_url, description) 
-		values (?, ?, ?, ?, ?, ?)
+		insert into templates(name, author, author_url, clone_url, description) 
+		values (?, ?, ?, ?, ?)
 		on conflict(clone_url)
 		do update set
 			name        = excluded.name,
@@ -87,7 +87,7 @@ func (c *Connection) UpsertTemplate(tmpl Template) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(tmpl.ID, tmpl.Name, tmpl.Author, tmpl.AuthorURL, tmpl.CloneURL, tmpl.Description)
+	_, err = stmt.Exec(tmpl.Name, tmpl.Author, tmpl.AuthorURL, tmpl.CloneURL, tmpl.Description)
 	return err
 }
 

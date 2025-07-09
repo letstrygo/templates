@@ -28,7 +28,7 @@ func NewConnection() (*Connection, error) {
 }
 
 const (
-	RemoteURL            string = "https://raw.githubusercontent.com/letstrygo/templates/refs/heads/main/database.sqlite"
+	RemoteURL            string = "https://raw.githubusercontent.com/letstrygo/templates/refs/heads/main/dist/database.sqlite"
 	TemporaryDatabaseURL string = "./temp.sqlite"
 )
 

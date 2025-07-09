@@ -9,11 +9,5 @@ This repository contains publicly available templates for use with [LetsTry](htt
 To add a template to this repository:
 
 1. Fork this repository.
-2. Clone the your fork of the repository.
-3. Add your template using the `add` command.
-   ```powershell
-   cd dist
-   ./templates-{platform} add <name> <author> <author_url> <clone_url> <description>
-   ```
-4. Commit the updated sqlite database file.
-5. Open a pull request with the updated database file.
+2. Edit the `./dist/repository.csv` file in your fork, adding your template.
+3. Create a Pull Request.

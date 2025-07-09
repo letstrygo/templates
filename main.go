@@ -27,6 +27,16 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	case "seed":
+		err = conn.Migrate()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = conn.Seed()
+		if err != nil {
+			log.Fatal(err)
+		}
 	case "update":
 		err = conn.Update()
 		if err != nil {

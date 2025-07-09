@@ -1,5 +1,7 @@
 package database
 
+import "log"
+
 func (c *Connection) Update() error {
 	remoteDb, err := NewRemoteConnection()
 	if err != nil {
@@ -12,7 +14,10 @@ func (c *Connection) Update() error {
 	}
 
 	for _, t := range tmpls {
-		_ = c.UpsertTemplate(t)
+		err = c.UpsertTemplate(t)
+		if err != nil {
+			log.Printf("error: %v\n", err)
+		}
 	}
 
 	return remoteDb.Terminate()
