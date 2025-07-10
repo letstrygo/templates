@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
+	"github.com/letstrygo/templates/pkg"
 )
 
 var (
@@ -12,22 +14,12 @@ var (
 	ErrOfficialTemplate = errors.New("cannot delete official template")
 )
 
-type Template struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Author      string `json:"author"`
-	AuthorURL   string `json:"author_url"`
-	CloneURL    string `json:"clone_url"`
-	Description string `json:"description"`
-	IsOfficial  bool   `json:"-"`
-}
-
 type ListTemplates struct {
 	// The search phrase to use. Leave blank to list all.
 	Search string
 }
 
-func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
+func (c *Connection) ListTemplates(arg ListTemplates) ([]pkg.Template, error) {
 	var (
 		rows *sql.Rows
 		err  error
@@ -55,9 +47,9 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 	}
 	defer rows.Close()
 
-	var results []Template
+	var results []pkg.Template
 	for rows.Next() {
-		var t Template
+		var t pkg.Template
 		if err := rows.Scan(
 			&t.ID,
 			&t.Name,
@@ -78,7 +70,7 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 	return results, nil
 }
 
-func (c *Connection) UpsertTemplate(tmpl Template) error {
+func (c *Connection) UpsertTemplate(tmpl pkg.Template) error {
 	// Insert data
 	stmt, err := c.Prepare(`
 		insert into templates(name, author, author_url, clone_url, description, is_official) 
@@ -125,7 +117,7 @@ func (c *Connection) CreateTemplate(tmpl CreateTemplate) error {
 	return err
 }
 
-func (c *Connection) GetTemplateByName(name string) (*Template, error) {
+func (c *Connection) GetTemplateByName(name string) (*pkg.Template, error) {
 	rows, err := c.Query(`
 		select * from templates
 		where name = ?
@@ -137,9 +129,9 @@ func (c *Connection) GetTemplateByName(name string) (*Template, error) {
 
 	defer rows.Close()
 
-	var results []Template
+	var results []pkg.Template
 	for rows.Next() {
-		var t Template
+		var t pkg.Template
 		if err := rows.Scan(
 			&t.ID,
 			&t.Name,
