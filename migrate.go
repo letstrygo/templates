@@ -1,4 +1,4 @@
-package database
+package templates
 
 func (c *Connection) Migrate() error {
 	// Create table

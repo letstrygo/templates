@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/letstrygo/templates/internal/database"
+	"github.com/letstrygo/templates"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 func main() {
 	args := os.Args[1:]
 
-	conn, err := database.NewConnection()
+	conn, err := templates.NewConnection()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func main() {
 			log.Fatal(ErrInvalidArgumentCount)
 		}
 
-		err := conn.CreateTemplate(database.CreateTemplate{
+		err := conn.CreateTemplate(templates.CreateTemplate{
 			Name:        args[0],
 			Author:      args[1],
 			AuthorURL:   args[2],
@@ -84,12 +84,12 @@ func main() {
 			search = args[0]
 		}
 
-		conn, err := database.NewConnection()
+		conn, err := templates.NewConnection()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		tmpls, err := conn.ListTemplates(database.ListTemplates{
+		tmpls, err := conn.ListTemplates(templates.ListTemplates{
 			Search: search,
 		})
 		if err != nil {

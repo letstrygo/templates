@@ -20,4 +20,4 @@ jobs:
       - name: Try Seed Database
         run: |
           cd dist
-          go run ../ seed
+          go run ../cmd seed

@@ -1,11 +1,9 @@
-package database
+package templates
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
-
-	"github.com/letstrygo/templates/pkg"
 )
 
 var (
@@ -19,7 +17,7 @@ type ListTemplates struct {
 	Search string
 }
 
-func (c *Connection) ListTemplates(arg ListTemplates) ([]pkg.Template, error) {
+func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 	var (
 		rows *sql.Rows
 		err  error
@@ -47,9 +45,9 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]pkg.Template, error) {
 	}
 	defer rows.Close()
 
-	var results []pkg.Template
+	var results []Template
 	for rows.Next() {
-		var t pkg.Template
+		var t Template
 		if err := rows.Scan(
 			&t.ID,
 			&t.Name,
@@ -70,7 +68,7 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]pkg.Template, error) {
 	return results, nil
 }
 
-func (c *Connection) UpsertTemplate(tmpl pkg.Template) error {
+func (c *Connection) UpsertTemplate(tmpl Template) error {
 	// Insert data
 	stmt, err := c.Prepare(`
 		insert into templates(name, author, author_url, clone_url, description, is_official) 
@@ -117,7 +115,7 @@ func (c *Connection) CreateTemplate(tmpl CreateTemplate) error {
 	return err
 }
 
-func (c *Connection) GetTemplateByName(name string) (*pkg.Template, error) {
+func (c *Connection) GetTemplateByName(name string) (*Template, error) {
 	rows, err := c.Query(`
 		select * from templates
 		where name = ?
@@ -129,9 +127,9 @@ func (c *Connection) GetTemplateByName(name string) (*pkg.Template, error) {
 
 	defer rows.Close()
 
-	var results []pkg.Template
+	var results []Template
 	for rows.Next() {
-		var t pkg.Template
+		var t Template
 		if err := rows.Scan(
 			&t.ID,
 			&t.Name,

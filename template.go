@@ -1,4 +1,4 @@
-package pkg
+package templates
 
 type Template struct {
 	ID          int    `json:"id"`
