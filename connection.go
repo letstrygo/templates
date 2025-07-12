@@ -18,13 +18,17 @@ const (
 	DatabaseURL string = "database.sqlite"
 )
 
-func NewConnection() (*Connection, error) {
-	conn, err := sql.Open("sqlite3", DatabaseURL)
+func NewConnectionWithPath(path string) (*Connection, error) {
+	conn, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Connection{DatabaseURL, conn}, err
+	return &Connection{path, conn}, err
+}
+
+func NewConnection() (*Connection, error) {
+	return NewConnectionWithPath(DatabaseURL)
 }
 
 const (
@@ -54,10 +58,5 @@ func NewRemoteConnection() (*Connection, error) {
 	}
 
 	// Open a connection to the downloaded database
-	db, err := sql.Open("sqlite3", TemporaryDatabaseURL)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Connection{TemporaryDatabaseURL, db}, nil
+	return NewConnectionWithPath(TemporaryDatabaseURL)
 }
