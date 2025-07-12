@@ -16,7 +16,7 @@ var (
 func main() {
 	args := os.Args[1:]
 
-	conn, err := templates.NewConnection()
+	conn, err := templates.NewConnectionWithPath("database.sqlite")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +84,7 @@ func main() {
 			search = args[0]
 		}
 
-		conn, err := templates.NewConnection()
+		conn, err := templates.NewConnectionWithPath("database.sqlite")
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -13,10 +14,6 @@ type Connection struct {
 	file string
 	*sql.DB
 }
-
-const (
-	DatabaseURL string = "database.sqlite"
-)
 
 func NewConnectionWithPath(path string) (*Connection, error) {
 	conn, err := sql.Open("sqlite3", path)
@@ -27,13 +24,8 @@ func NewConnectionWithPath(path string) (*Connection, error) {
 	return &Connection{path, conn}, err
 }
 
-func NewConnection() (*Connection, error) {
-	return NewConnectionWithPath(DatabaseURL)
-}
-
 const (
-	RemoteURL            string = "https://raw.githubusercontent.com/letstrygo/templates/refs/heads/main/dist/database.sqlite"
-	TemporaryDatabaseURL string = "./temp.sqlite"
+	RemoteURL string = "https://raw.githubusercontent.com/letstrygo/templates/refs/heads/main/dist/database.sqlite"
 )
 
 func NewRemoteConnection() (*Connection, error) {
@@ -44,8 +36,10 @@ func NewRemoteConnection() (*Connection, error) {
 	}
 	defer resp.Body.Close()
 
+	tempDatabasePath := filepath.Join(os.TempDir(), "lt-temp.sqlite")
+
 	// Create the local file
-	out, err := os.Create(TemporaryDatabaseURL)
+	out, err := os.Create(tempDatabasePath)
 	if err != nil {
 		return nil, err
 	}
@@ -58,5 +52,5 @@ func NewRemoteConnection() (*Connection, error) {
 	}
 
 	// Open a connection to the downloaded database
-	return NewConnectionWithPath(TemporaryDatabaseURL)
+	return NewConnectionWithPath(tempDatabasePath)
 }
