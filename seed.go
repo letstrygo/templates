@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrIncompleteRow error = errors.New("incomplete row")
+	ErrInvalidColumnCount error = errors.New("csv templates must have 2 columns")
 )
 
 const (
@@ -35,17 +35,15 @@ func (c *Connection) Seed() error {
 	var templates []CreateTemplate
 
 	for _, row := range records[1:] {
-		if len(row) < 5 {
-			return ErrIncompleteRow
+		if len(row) != 2 {
+			return ErrInvalidColumnCount
 		}
 
 		t := CreateTemplate{
-			Name:        row[0],
-			Author:      row[1],
-			AuthorURL:   row[2],
-			CloneURL:    row[3],
-			Description: row[4],
-			IsOfficial:  true,
+			Name:       row[0],
+			Source:     row[1],
+			Type:       TemplateTypeGitRepository,
+			IsOfficial: true,
 		}
 		templates = append(templates, t)
 	}

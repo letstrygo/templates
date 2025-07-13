@@ -29,11 +29,9 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 			`
 			 select * from templates
 			 where name like ?
-			 or clone_url like ?
-			 or author like ?
-			 or description like ?;
+			 or source like ?;
 			`,
-			search, search, search, search,
+			search, search,
 		)
 	} else {
 		rows, err = c.Query(
@@ -51,10 +49,8 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 		if err := rows.Scan(
 			&t.ID,
 			&t.Name,
-			&t.Author,
-			&t.AuthorURL,
-			&t.CloneURL,
-			&t.Description,
+			&t.Source,
+			&t.Type,
 			&t.IsOfficial,
 		); err != nil {
 			return nil, err
@@ -71,47 +67,40 @@ func (c *Connection) ListTemplates(arg ListTemplates) ([]Template, error) {
 func (c *Connection) UpsertTemplate(tmpl Template) error {
 	// Insert data
 	stmt, err := c.Prepare(`
-		insert into templates(name, author, author_url, clone_url, description, is_official) 
-		values (?, ?, ?, ?, ?, ?)
-		on conflict(clone_url)
+		insert into templates(name, source, type, is_official) 
+		values (?, ?, ?, ?)
+		on conflict(source)
 		do update set
-			name        = excluded.name,
-			author      = excluded.author,
-			author_url  = excluded.author_url,
-			clone_url   = excluded.clone_url,
-			description = excluded.description,
-			is_official = excluded.is_official;
+			name        = excluded.name;
 	`)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(tmpl.Name, tmpl.Author, tmpl.AuthorURL, tmpl.CloneURL, tmpl.Description, tmpl.IsOfficial)
+	_, err = stmt.Exec(tmpl.Name, tmpl.Source, tmpl.Type, tmpl.IsOfficial)
 	return err
 }
 
 type CreateTemplate struct {
-	Name        string `json:"name"`
-	Author      string `json:"author"`
-	AuthorURL   string `json:"author_url"`
-	CloneURL    string `json:"clone_url"`
-	Description string `json:"description"`
-	IsOfficial  bool   `json:"-"`
+	Name       string       `json:"name"`
+	Source     string       `json:"source"`
+	Type       TemplateType `json:"type"`
+	IsOfficial bool         `json:"-"`
 }
 
 func (c *Connection) CreateTemplate(tmpl CreateTemplate) error {
 	// Insert data
 	stmt, err := c.Prepare(`
-		insert into templates(name, author, author_url, clone_url, description, is_official) 
-		values (?, ?, ?, ?, ?, ?);
+		insert into templates(name, source, type, is_official) 
+		values (?, ?, ?, ?);
 	`)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(tmpl.Name, tmpl.Author, tmpl.AuthorURL, tmpl.CloneURL, tmpl.Description, tmpl.IsOfficial)
+	_, err = stmt.Exec(tmpl.Name, tmpl.Source, tmpl.Type, tmpl.IsOfficial)
 	return err
 }
 
@@ -133,10 +122,8 @@ func (c *Connection) GetTemplateByName(name string) (*Template, error) {
 		if err := rows.Scan(
 			&t.ID,
 			&t.Name,
-			&t.Author,
-			&t.AuthorURL,
-			&t.CloneURL,
-			&t.Description,
+			&t.Source,
+			&t.Type,
 			&t.IsOfficial,
 		); err != nil {
 			return nil, err

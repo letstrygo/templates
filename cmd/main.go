@@ -49,15 +49,17 @@ func main() {
 			log.Fatal(ErrInvalidArgumentCount)
 		}
 
-		err := conn.CreateTemplate(templates.CreateTemplate{
-			Name:        args[0],
-			Author:      args[1],
-			AuthorURL:   args[2],
-			CloneURL:    args[3],
-			Description: args[4],
-			IsOfficial:  false,
-		})
+		templateType, err := templates.NewTemplateType(args[2])
+		if err != nil {
+			log.Fatal(err)
+		}
 
+		err = conn.CreateTemplate(templates.CreateTemplate{
+			Name:       args[0],
+			Source:     args[1],
+			Type:       templateType,
+			IsOfficial: false,
+		})
 		if err != nil {
 			log.Fatal(err)
 		}
